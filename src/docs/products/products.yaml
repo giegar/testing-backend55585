@@ -1,0 +1,150 @@
+paths:
+  /api/products:
+    get:
+      tags:
+        - Products
+      summary: Get products
+      responses:
+        "200":
+          description: All products obtained from DB
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Product"
+      # Se requieren permisos de usuario, administrador o premium para acceder a este endpoint
+      security:
+        - bearerAuth: ["USER", "ADMIN", "PREMIUM"]
+    post:
+      tags:
+        - Products
+      summary: Add product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "201":
+          description: New product added
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+
+  /api/products/{pid}:
+    get:
+      tags:
+        - Products
+      summary: Get product by ID
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+      # Se requieren permisos de usuario, administrador o premium para acceder a este endpoint
+      security:
+        - bearerAuth: ["USER", "ADMIN", "PREMIUM"]
+    put:
+      tags:
+        - Products
+      summary: Update product by ID
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: Product ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        "200":
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+      # Se requieren permisos de usuario, administrador o premium para acceder a este endpoint
+      security:
+        - bearerAuth: ["USER", "PREMIUM"]
+    delete:
+      tags:
+        - Products
+      summary: Delete product by ID
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: Product by ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+      # Se requieren permisos de usuario, administrador o premium para acceder a este endpoint
+      security:
+        - bearerAuth: ["USER", "PREMIUM"]
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title
+        description:
+          type: string
+          description: Description
+        price:
+          type: number
+          description: Price
+        thumbnails:
+          type: array
+          items:
+            type: string
+          description: Preview image
+        code:
+          type: string
+          description: Unique code
+        category:
+          type: string
+          description: Category
+        stock:
+          type: integer
+          description: Available stock
+        owner:
+          type: string
+          description: Owner ID
+        required:
+          - title
+          - description
+          - price
+          - code 
+          - category
+          - stock
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,9 @@
+{"level":"http","message":"DEV http"}
+{"level":"warning","message":"PROD warning"}
+{"level":"error","message":"PROD error"}
+{"level":"warning","message":"PROD warning"}
+{"level":"error","message":"PROD error"}
+{"level":"error","message":"PROD error"}
+{"level":"fatal","message":"PROD fatal"}
+{"level":"error","message":"PROD error"}
+{"level":"fatal","message":"PROD fatal"}

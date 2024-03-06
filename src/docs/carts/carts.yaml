@@ -1,0 +1,260 @@
+paths:
+  /api/carts:
+    post:
+      tags:
+        - Carts
+      summary: Create new cart
+      responses:
+        "201":
+          description: New cart created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+      # Se requieren permisos de usuario, administrador o premium para acceder a este endpoint
+      security:
+        - bearerAuth: ["USER", "ADMIN", "PREMIUM"]
+
+  /api/carts/{cid}:
+    get:
+      tags:
+        - Carts
+      summary: Get cart by ID
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cart acquired from DB
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+      # Se requieren permisos de usuario, administrador o premium para acceder a este endpoint
+      security:
+        - bearerAuth: ["USER", "ADMIN", "PREMIUM"]
+    put:
+      tags:
+        - Carts
+      summary: Update cart by ID
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Cart"
+      responses:
+        "200":
+          description: Cart updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+      # Se requieren permisos de usuario, administrador o premium para acceder a este endpoint
+      security:
+        - bearerAuth: ["USER", "ADMIN", "PREMIUM"]
+    delete:
+      tags:
+        - Carts
+      summary: Delete cart by ID
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart by ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cart deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+      # Se requieren permisos de usuario, administrador o premium para acceder a este endpoint
+      security:
+        - bearerAuth: ["USER", "ADMIN", "PREMIUM"]
+
+  /api/carts/{cid}/product/{pid}:
+    post:
+      tags:
+        - Carts
+      summary: Add product to cart
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartProduct"
+      responses:
+        "200":
+          description: Product added to cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+      # Se requieren permisos de usuario, administrador o premium para acceder a este endpoint
+      security:
+        - bearerAuth: ["USER", "PREMIUM"]
+    put:
+      tags:
+        - Carts
+      summary: Update product quantity in cart
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart ID
+          schema:
+            type: string
+        - name: pid
+          in: query
+          required: true
+          description: Product ID
+          schema:
+            type: string
+        - name: quantity
+          in: query
+          required: true
+          description: New product quantity 
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Product updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+      # Se requieren permisos de usuario, administrador o premium para acceder a este endpoint
+      security:
+        - bearerAuth: ["USER", "ADMIN", "PREMIUM"]
+    delete:
+      tags:
+        - Carts
+      summary: Delete a product in cart
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart ID
+          schema:
+            type: string
+        - name: pid
+          in: query
+          required: true
+          description: Product ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Product deleted from cart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+      # Se requieren permisos de usuario, administrador o premium para acceder a este endpoint
+      security:
+        - bearerAuth: ["USER", "PREMIUM"]
+
+  /api/carts/{cid}/product:
+    delete:
+      tags:
+        - Carts
+      summary: Empty cart
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: Cart ID
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Cart empty
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+      # Se requieren permisos de usuario, administrador o premium para acceder a este endpoint
+      security:
+        - bearerAuth: ["USER", "PREMIUM"]
+
+  /api/carts/{cid}/purchase:
+    get:
+      tags:
+        - Carts
+      summary: Create purchase ticket
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          description: ID del carrito
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Purchase ticket created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PurchaseDetails"
+
+components:
+  schemas:
+    Cart:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: Unique cart ID
+        products:
+          type: array
+          description: Products added to cart
+          items:
+            $ref: "#/components/schemas/CartProduct"
+    CartProduct:
+      type: object
+      properties:
+        product:
+          type: string
+          description: Product ID
+        quantity:
+          type: integer
+          description: roduct quantity
+    PurchaseDetails:
+      type: object
+      properties:
+        total:
+          type: number
+          description: Total amount
+        items:
+          type: array
+          description: Products purchased
+          items:
+            type: object
+            properties:
+              product:
+                type: string
+                description: Product ID
+              quantity:
+                type: integer
+                description: Product purchased quantity
